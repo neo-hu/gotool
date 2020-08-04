@@ -1,5 +1,3 @@
-// Package urlutil provides helper function to check urls kind.
-// It supports http urls, git urls and transport url (tcp://, …)
 package urlutil
 
 import (
@@ -16,12 +14,10 @@ var (
 	urlPathWithFragmentSuffix = regexp.MustCompile(".git(?:#.+)?$")
 )
 
-// IsURL returns true if the provided str is an HTTP(S) URL.
 func IsURL(str string) bool {
 	return checkURL(str, "url")
 }
 
-// IsGitURL returns true if the provided str is a git repository URL.
 func IsGitURL(str string) bool {
 	if IsURL(str) && urlPathWithFragmentSuffix.MatchString(str) {
 		return true
@@ -29,7 +25,6 @@ func IsGitURL(str string) bool {
 	return checkURL(str, "git")
 }
 
-// IsTransportURL returns true if the provided str is a transport (tcp, tcp+tls, udp, unix) URL.
 func IsTransportURL(str string) bool {
 	return checkURL(str, "transport")
 }
