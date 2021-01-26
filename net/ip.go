@@ -7,12 +7,11 @@ import (
 	"strings"
 )
 
-func LocalIP() (ips []string, ipv6s []string, err error) {
-	ips = make([]string, 0)
-	ipv6s = make([]string, 0)
+func LocalIP() (ips []net.IP, err error) {
+	ips = make([]net.IP, 0)
 	ifaces, e := net.Interfaces()
 	if e != nil {
-		return ips, ipv6s, e
+		return ips, e
 	}
 
 	for _, iface := range ifaces {
@@ -30,7 +29,7 @@ func LocalIP() (ips []string, ipv6s []string, err error) {
 
 		addrs, e := iface.Addrs()
 		if e != nil {
-			return ips, ipv6s, e
+			return ips, e
 		}
 
 		for _, addr := range addrs {
@@ -45,17 +44,10 @@ func LocalIP() (ips []string, ipv6s []string, err error) {
 			if ip == nil || ip.IsLoopback() {
 				continue
 			}
-
-			ipv4 := ip.To4()
-			if ipv4 != nil {
-				ips = append(ips, ipv4.String())
-			} else {
-				ipv6s = append(ipv6s, ip.String())
-			}
-
+			ips = append(ips, ip)
 		}
 	}
-	return ips, ipv6s, nil
+	return ips, nil
 }
 
 func IsIntranet(ipStr string) bool {
