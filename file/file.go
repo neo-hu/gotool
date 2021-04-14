@@ -113,3 +113,44 @@ func SelfPath() string {
 	path, _ := filepath.Abs(os.Args[0])
 	return path
 }
+
+func RemoveDir(dir string) error {
+	files, err := filepath.Glob(filepath.Join(dir, "*"))
+	if err != nil {
+		return err
+	}
+	for _, f := range files {
+		err = os.RemoveAll(f)
+		if err != nil {
+			return err
+		}
+	}
+	return os.RemoveAll(dir)
+}
+func DirsUnder(dirPath string) ([]string, error) {
+	if !IsExist(dirPath) {
+		return []string{}, nil
+	}
+
+	fs, err := ioutil.ReadDir(dirPath)
+	if err != nil {
+		return []string{}, err
+	}
+
+	sz := len(fs)
+	if sz == 0 {
+		return []string{}, nil
+	}
+
+	ret := make([]string, 0, sz)
+	for i := 0; i < sz; i++ {
+		if fs[i].IsDir() {
+			name := fs[i].Name()
+			if name != "." && name != ".." {
+				ret = append(ret, name)
+			}
+		}
+	}
+
+	return ret, nil
+}
